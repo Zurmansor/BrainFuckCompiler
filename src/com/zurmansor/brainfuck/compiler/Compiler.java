@@ -11,12 +11,11 @@ public class Compiler {
     private String REGEX = "[+-.\\[\\]<>]*";
 
     private String code;
-    private int operationIndex = 0;
-    private int cell = 0;
-    private ArrayList<Operation> operationList = new ArrayList<Operation>();    // масив операций
-    private ArrayList<Integer> chain = new ArrayList<Integer>();        // масив ячеек
-
-    private ArrayList<Integer> result = new ArrayList<Integer>();           //массив вывода
+    private int operationIndex = 0; // индекс операции
+    private int cell = 0;           // индекс ячейки
+    private ArrayList<Operation> operationList = new ArrayList<Operation>();    // массив операций
+    private ArrayList<Integer> chain = new ArrayList<Integer>();                // массив ячеек
+    private ArrayList<Integer> result = new ArrayList<Integer>();               // массив вывода
 
     public Compiler() {
 
@@ -121,7 +120,7 @@ public class Compiler {
     }
 
     private void semantic() throws NegativeStringException {
-        chain.add(0, 0);
+        chain.add(0);
         for (operationIndex = 0; operationIndex < operationList.size(); operationIndex++) {
             Operation operation = operationList.get(operationIndex);
 
@@ -183,8 +182,6 @@ public class Compiler {
                     break;
             }
         }
-
-        return;
     }
 
 //    private void cycle () {
@@ -258,7 +255,6 @@ public class Compiler {
     }
 
     private void print () {
-        System.out.println("PRINT:");
         for (int ch : result) {
             System.out.print((char)ch);
         }
