@@ -36,6 +36,7 @@ public class Compiler {
         print();
     }
 
+    // перевод кода в массив команд с их весом
     private String compress() throws BracketException {
         String codeRes = "";
         int temp = 0;
@@ -64,6 +65,7 @@ public class Compiler {
                     break;
 
                 case '[':
+                    // циклы всегда имеют вес 1, чтобы отличать вложенные циклы
                     operationList.add(operationIndex, new Operation(Operation.Command.CYCLE, 1));
                     brackets++;
 //                    i = i + collect('[', i) - 1;
@@ -94,10 +96,11 @@ public class Compiler {
         return codeRes;
     }
 
-    private void addOperation(Operation.Command type) {
-        operationList.add(operationIndex, new Operation(type));
-    }
+//    private void addOperation(Operation.Command type) {
+//        operationList.add(operationIndex, new Operation(type));
+//    }
 
+    // сбор веса команды
     private int collect (char operation, int i) {
         while (i < code.length() && code.charAt(i) == operation) {
             if (operation == '-' || operation == '<' || operation == ']') {
@@ -110,15 +113,18 @@ public class Compiler {
         return operationList.get(operationIndex).getWeightAbs();
     }
 
+
     private void lexical() throws UnknownGrammarException {
-//        remove spaces
+//        удаление пробелов и переносов
         code = code.replaceAll("[\\s\n]+","");
 
+        // проверяем, что нет лишних символов
         if (!code.matches(REGEX)) {
             throw new UnknownGrammarException();
         }
     }
 
+    // проверка логики, проход по циклам и заполнение массива ячеек с числами
     private void semantic() throws NegativeStringException {
         chain.add(0);
         for (operationIndex = 0; operationIndex < operationList.size(); operationIndex++) {
@@ -173,6 +179,7 @@ public class Compiler {
                     // вывести несколько раз, если нужно
                     int c = operation.getWeight();
                     while (c > 0) {
+                        // тут данные собираются, а выводятся в методе print()
                         result.add(chain.get(cell));
                         c--;
                     }
@@ -216,6 +223,7 @@ public class Compiler {
 //
 //    }
 
+    // делаем смещение и создаем нулевые ячейки, если будет пропуск
     private void makeStep (int weight) throws NegativeStringException {
         // указываем на новую ячейку (смещение)
         cell += weight;
@@ -236,24 +244,25 @@ public class Compiler {
         }
     }
 
-    private void addCellIfEmpty () {
-        if (cell >= chain.size()) {
-            chain.add(cell, 1);
-        }
-    }
+//    private void addCellIfEmpty () {
+//        if (cell >= chain.size()) {
+//            chain.add(cell, 1);
+//        }
+//    }
 
-    private void printChain () {
-        for (int ch : chain ) {
-            System.out.println(ch);
-        }
-    }
+//    private void printChain () {
+//        for (int ch : chain ) {
+//            System.out.println(ch);
+//        }
+//    }
 
-    private void printOperations () {
-        for (Operation operation : operationList ) {
-            System.out.println(operation.getCommand() + "." + operation.getWeight());
-        }
-    }
+//    private void printOperations () {
+//        for (Operation operation : operationList ) {
+//            System.out.println(operation.getCommand() + "." + operation.getWeight());
+//        }
+//    }
 
+    // вывод того, что получилось
     private void print () {
         for (int ch : result) {
             System.out.print((char)ch);
