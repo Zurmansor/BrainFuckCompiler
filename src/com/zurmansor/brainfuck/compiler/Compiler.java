@@ -2,6 +2,7 @@ package com.zurmansor.brainfuck.compiler;
 
 import com.zurmansor.brainfuck.exception.BracketException;
 import com.zurmansor.brainfuck.exception.BrainFuckException;
+import com.zurmansor.brainfuck.exception.NegativeStringException;
 import com.zurmansor.brainfuck.exception.UnknownGrammarException;
 
 import java.util.ArrayList;
@@ -112,14 +113,14 @@ public class Compiler {
 
     private void lexical() throws UnknownGrammarException {
 //        remove spaces
-        code = code.replaceAll("\\s+","");
+        code = code.replaceAll("[\\s\n]+","");
 
         if (!code.matches(REGEX)) {
             throw new UnknownGrammarException();
         }
     }
 
-    private void semantic() {
+    private void semantic() throws NegativeStringException {
         chain.add(0, 0);
         for (operationIndex = 0; operationIndex < operationList.size(); operationIndex++) {
             Operation operation = operationList.get(operationIndex);
@@ -139,6 +140,7 @@ public class Compiler {
                     if (operation.getWeight() > 0) {
 //                        opening bracket
                         if (chain.get(cell) <= 0) {
+                            // если текущая ячейка 0, перейти на операцию последующую за операцией закрывания текущего цикла
                             int bracket = 1;
                             while (bracket > 0) {
                                 operationIndex++;
@@ -147,12 +149,12 @@ public class Compiler {
                                     bracket += operation.getWeight();
                                 }
                             }
-//                            operationIndex++;
-                            // если текущая ячейка 0, перейти на операцию последующую за операцией закрывания текущего цикла
+
                         }
                     } else {
 //                        closing bracket
                         if (chain.get(cell) > 0) {
+                            // если текущая ячейка не равно 0, вернуться к началу соответствующего цикла
                             int bracket = -1;
                             while (bracket < 0) {
                                 operationIndex--;
@@ -217,16 +219,17 @@ public class Compiler {
 //
 //    }
 
-    private void makeStep (int weight) {
+    private void makeStep (int weight) throws NegativeStringException {
         // указываем на новую ячейку (смещение)
         cell += weight;
 
         if (cell < 0) {
-//          TODO: CATCH
+            throw new NegativeStringException();
         }
 
         // create new and set 0 to missed
         // задаем 0 новой ячейке и всем ячейкам до нее, если их не было
+
         if (cell >= chain.size()) {
             int tmpCell = chain.size();
             while (tmpCell <= cell) {
@@ -255,6 +258,7 @@ public class Compiler {
     }
 
     private void print () {
+        System.out.println("PRINT:");
         for (int ch : result) {
             System.out.print((char)ch);
         }
