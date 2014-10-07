@@ -68,13 +68,11 @@ public class Compiler {
                     // циклы всегда имеют вес 1, чтобы отличать вложенные циклы
                     operationList.add(operationIndex, new Operation(Operation.Command.CYCLE, 1));
                     brackets++;
-//                    i = i + collect('[', i) - 1;
                     break;
 
                 case ']':
                     operationList.add(operationIndex, new Operation(Operation.Command.CYCLE, -1));
                     brackets--;
-//                    i = i + collect(']', i) - 1;
                     break;
 
                 case '.':
@@ -95,10 +93,6 @@ public class Compiler {
         }
         return codeRes;
     }
-
-//    private void addOperation(Operation.Command type) {
-//        operationList.add(operationIndex, new Operation(type));
-//    }
 
     // сбор веса команды
     private int collect (char operation, int i) {
@@ -168,7 +162,6 @@ public class Compiler {
                                     bracket += operation.getWeight();
                                 }
                             }
-//                            operationIndex++;
                         }
                     }
 
@@ -191,38 +184,6 @@ public class Compiler {
         }
     }
 
-//    private void cycle () {
-//        while (chain.get(cell) > 0) {
-//            int tmpOperationIndex = operationIndex + 1;
-//            Operation tmpOperation = operationList.get(tmpOperationIndex);
-//
-//            while (tmpOperation.getCommand() != Operation.Command.CYCLE || tmpOperation.getWeight() > 0) {
-//
-//                switch (tmpOperation.getCommand()) {
-//                    case ADD:
-//                        // прибавляем вес текущей ячейке
-//                        chain.set(cell, chain.get(cell) + tmpOperation.getWeight());
-//                        break;
-//
-//                    case STEP:
-//                        makeStep(tmpOperation.getWeight());
-//                        break;
-//
-//                    case CYCLE:
-//                        cycle();
-//                        break;
-//
-//                    default:
-//                        break;
-//                }
-//
-//                tmpOperationIndex++;
-//                tmpOperation = operationList.get(tmpOperationIndex);
-//            }
-//        }
-//
-//    }
-
     // делаем смещение и создаем нулевые ячейки, если будет пропуск
     private void makeStep (int weight) throws NegativeStringException {
         // указываем на новую ячейку (смещение)
@@ -231,10 +192,7 @@ public class Compiler {
         if (cell < 0) {
             throw new NegativeStringException();
         }
-
-        // create new and set 0 to missed
         // задаем 0 новой ячейке и всем ячейкам до нее, если их не было
-
         if (cell >= chain.size()) {
             int tmpCell = chain.size();
             while (tmpCell <= cell) {
@@ -243,24 +201,6 @@ public class Compiler {
             }
         }
     }
-
-//    private void addCellIfEmpty () {
-//        if (cell >= chain.size()) {
-//            chain.add(cell, 1);
-//        }
-//    }
-
-//    private void printChain () {
-//        for (int ch : chain ) {
-//            System.out.println(ch);
-//        }
-//    }
-
-//    private void printOperations () {
-//        for (Operation operation : operationList ) {
-//            System.out.println(operation.getCommand() + "." + operation.getWeight());
-//        }
-//    }
 
     // вывод того, что получилось
     private void print () {

@@ -42,7 +42,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        Compiler compiler = new Compiler(CODE_9);
+        Compiler compiler = new Compiler(HELLO);
         try {
             compiler.start();
         } catch (BrainFuckException e) {
@@ -50,7 +50,7 @@ public class Main {
         }
 
         System.out.println("");
-        Interpreter interpreter = new Interpreter(CODE_9);
+        Interpreter interpreter = new Interpreter(HELLO);
         try {
             interpreter.start();
         } catch (BrainFuckException e) {
